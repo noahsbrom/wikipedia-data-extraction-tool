@@ -14,5 +14,21 @@ def home():
 @app.route('/infobox', methods=['POST'])
 def generate_infobox():
     url = request.form['userInput']
-    ib, similarity_score = infobox_generation.generate_infobox(url)
-    return ib
+
+    while True:
+        try:
+            ib, _ = infobox_generation.generate_infobox(url)
+            if ib != '':
+                ib_dict = {}
+                ib_arr = ib.split('\n')
+                for pair in ib_arr:
+                    pair_arr = pair.split(':')
+                    key = pair_arr[0]
+                    val = pair_arr[1]
+                    ib_dict[key] = val
+                break
+        except:
+            continue
+
+
+    return render_template('infobox.html', infobox=ib_dict)
